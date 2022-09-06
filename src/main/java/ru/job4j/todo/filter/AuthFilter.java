@@ -1,6 +1,5 @@
 package ru.job4j.todo.filter;
 
-import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
