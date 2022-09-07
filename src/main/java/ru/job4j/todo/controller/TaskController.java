@@ -67,16 +67,14 @@ public class TaskController {
     @GetMapping("/tasks/{id}")
     public String getTask(Model model, HttpSession session, @PathVariable("id") int id) {
         getSession(model, session);
-        Task task = service.findById(id).get();
-        model.addAttribute("t", task);
+        model.addAttribute("t", service.findById(id).get());
         return "task";
     }
 
     @GetMapping("/update/{id}")
     public String updateTask(Model model, HttpSession session, @PathVariable("id") int id) {
         getSession(model, session);
-        Task task = service.findById(id).get();
-        model.addAttribute("t", task);
+        model.addAttribute("t", service.findById(id).get());
         return "update";
     }
 

@@ -1,7 +1,5 @@
 package ru.job4j.todo.service;
 
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.store.UserStore;
@@ -37,6 +35,7 @@ public class UserService {
     public Optional<User> findById(int id) {
         return store.findById(id);
     }
+
     public List<User> findByLikeLogin(String key) {
         return store.findByLikeLogin(key);
     }

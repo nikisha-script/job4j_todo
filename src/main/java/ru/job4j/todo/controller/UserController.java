@@ -33,13 +33,6 @@ public class UserController {
         return "registration";
     }
 
-    @GetMapping("/login")
-    public String login(Model model,
-                        @RequestParam(name = "fail", required = false) Boolean fail) {
-        model.addAttribute("fail", fail != null);
-        return "login";
-    }
-
     @PostMapping("/registration")
     public String registration(@ModelAttribute User user) {
         User temp = service.create(user);

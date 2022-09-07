@@ -20,14 +20,11 @@ public class Task {
     @EqualsAndHashCode.Include
     private int id;
 
-    @Column(name = "description")
     @NonNull
     private String description;
 
-    @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
 
-    @Column(name = "done")
     @NonNull
     private boolean done;
 

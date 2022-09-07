@@ -18,15 +18,12 @@ public class User {
     @EqualsAndHashCode.Include
     private int id;
 
-    @Column(name = "name")
     @NonNull
     private String name;
 
-    @Column(name = "login")
     @NonNull
     private String login;
-
-    @Column(name = "password")
+    
     @NonNull
     private String password;
 }
