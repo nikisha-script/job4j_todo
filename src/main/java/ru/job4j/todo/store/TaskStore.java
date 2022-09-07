@@ -2,6 +2,9 @@ package ru.job4j.todo.store;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
@@ -16,6 +19,7 @@ public class TaskStore implements Crud {
 
     private final SessionFactory sf;
 
+
     public Task saveOrUpdate(Task task) {
         run(session -> session.saveOrUpdate(task), sf);
         return task;
@@ -27,7 +31,6 @@ public class TaskStore implements Crud {
                 Map.of("fId", id),
                 sf
         );
-
     }
 
     public List<Task> findAllTask() {
