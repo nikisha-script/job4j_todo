@@ -1,10 +1,6 @@
 package ru.job4j.todo.store;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
@@ -14,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-@Slf4j
 public class TaskStore implements Crud {
 
     private final SessionFactory sf;
@@ -34,7 +29,14 @@ public class TaskStore implements Crud {
     }
 
     public List<Task> findAllTask() {
-        return query("from Task", Task.class, sf);
+        return query("from Task join fetch Category", Task.class, sf);
+    }
+
+    public List findAllTaskAndCategories() {
+        return command(session ->
+                        session.createQuery("select c from Task c join fetch c.categories")
+                .list(),
+                sf);
     }
 
 

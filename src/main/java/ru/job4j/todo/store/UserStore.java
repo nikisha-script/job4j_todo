@@ -1,11 +1,7 @@
 package ru.job4j.todo.store;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
@@ -14,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
-@Log4j2
 @Repository
 public class UserStore implements Crud {
 

@@ -36,3 +36,17 @@ ALTER TABLE tasks ADD COLUMN priority_id int REFERENCES priorities(id);
 
 --changeset nikishin:update_tasks
 UPDATE tasks SET priority_id = (SELECT id FROM priorities WHERE name = 'urgently' LIMIT 1);
+
+--changeset nikishin:create_categories
+create table if not exists categories (
+	id serial primary key,
+	name varchar(255)
+);
+--changeset nikishin:many_to_many_categories
+create table if not exists tasks_categories (
+	categories_id int references categories(id),
+	task_id int references tasks(id)
+);
+--changeset nikishin:insert_categories
+insert into categories (name) values('simple');
+insert into categories (name) values('hard');

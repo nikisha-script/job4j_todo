@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -35,5 +37,8 @@ public class Task {
     @ManyToOne()
     @JoinColumn(name = "priority_id")
     private Priority priority;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Category> categories = new ArrayList<>();
 
 }

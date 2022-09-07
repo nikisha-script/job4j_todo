@@ -9,6 +9,7 @@ import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @ThreadSafe
@@ -32,20 +33,27 @@ public class TaskController {
     @GetMapping("/tasks")
     public String tasks(Model model, HttpSession session) {
         getSession(model, session);
-        model.addAttribute("tasks", service.findAllTask());
+        model.addAttribute("tasks", service.findAllTaskAndCategories());
         return "tasks";
     }
 
     @GetMapping("/addTask")
     public String addTask(Model model, HttpSession session) {
         getSession(model, session);
+        model.addAttribute("categories", service.findAll());
         return "/addTask";
     }
 
     @PostMapping("/createTask")
-    public String createTask(@ModelAttribute Task task, HttpSession session) {
+    public String createTask(@RequestParam("category_id") List<Integer> categoryId,
+                             @ModelAttribute Task task,
+                             HttpSession session) {
         User user = (User) session.getAttribute("user");
         task.setUser(user);
+        for (Integer id : categoryId) {
+            var category = service.findByIdCategory(id).get();
+            task.getCategories().add(category);
+        }
         service.saveOrUpdate(task);
         return "redirect:/tasks";
     }
