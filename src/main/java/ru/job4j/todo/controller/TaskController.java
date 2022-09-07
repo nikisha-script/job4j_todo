@@ -9,6 +9,8 @@ import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -50,6 +52,7 @@ public class TaskController {
                              HttpSession session) {
         User user = (User) session.getAttribute("user");
         task.setUser(user);
+        task.setCreated(LocalDateTime.now());
         for (Integer id : categoryId) {
             var category = service.findByIdCategory(id).get();
             task.getCategories().add(category);

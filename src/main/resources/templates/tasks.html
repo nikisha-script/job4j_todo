@@ -59,7 +59,7 @@
       <tbody>
       <tr th:each="task: ${tasks}">
         <td><a th:text="${task.description}" th:href="@{|tasks/${task.id}|}"></a></td>
-        <td th:text="${task.created}"></td>
+        <td th:text="${#temporals.format(task.created, 'dd-MM-yyyy,HH:mm')}"></td>
         <td th:text="${task.user.name}"></td>
         <td> <span th:if="${!task.done}">Не исполнено</span>
           <span th:if="${task.done}">Исполнено</span>
