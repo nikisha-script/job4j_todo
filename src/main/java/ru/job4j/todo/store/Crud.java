@@ -1,7 +1,5 @@
 package ru.job4j.todo.store;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -13,21 +11,17 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Repository
-@Slf4j
-@AllArgsConstructor
-public class CrudRepo {
+public interface Crud {
 
-    private final SessionFactory sf;
-
-    public void run(Consumer<Session> command) {
+    default void run(Consumer<Session> command, SessionFactory sf) {
         tx(session -> {
                     command.accept(session);
                     return null;
-                }
+                }, sf
         );
     }
 
-    public void run(String query, Map<String, Object> args) {
+    default void run(String query, Map<String, Object> args, SessionFactory sf) {
         Consumer<Session> command = session -> {
             var sq = session
                     .createQuery(query);
@@ -36,17 +30,17 @@ public class CrudRepo {
             }
             sq.executeUpdate();
         };
-        run(command);
+        run(command, sf);
     }
 
-    public <T> List<T> query(String query, Class<T> cl) {
+    default <T> List<T> query(String query, Class<T> cl, SessionFactory sf) {
         Function<Session, List<T>> command = session -> session
                 .createQuery(query, cl)
                 .list();
-        return tx(command);
+        return tx(command, sf);
     }
 
-    public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args) {
+    default <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args, SessionFactory sf) {
         Function<Session, Optional<T>> command = session -> {
             var sq = session
                     .createQuery(query, cl);
@@ -55,10 +49,10 @@ public class CrudRepo {
             }
             return Optional.ofNullable(sq.getSingleResult());
         };
-        return tx(command);
+        return tx(command, sf);
     }
 
-    public <T> List<T> query(String query, Class<T> cl, Map<String, Object> args) {
+    default <T> List<T> query(String query, Class<T> cl, Map<String, Object> args, SessionFactory sf) {
         Function<Session, List<T>> command = session -> {
             var sq = session
                     .createQuery(query, cl);
@@ -67,10 +61,10 @@ public class CrudRepo {
             }
             return sq.list();
         };
-        return tx(command);
+        return tx(command, sf);
     }
 
-    public <T> T tx(Function<Session, T> command) {
+    private <T> T tx(Function<Session, T> command, SessionFactory sf) {
         var session = sf.openSession();
         try (session) {
             var tx = session.beginTransaction();
@@ -85,4 +79,5 @@ public class CrudRepo {
             throw e;
         }
     }
+
 }

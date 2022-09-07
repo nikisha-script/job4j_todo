@@ -2,6 +2,7 @@ package ru.job4j.todo.store;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
@@ -12,9 +13,9 @@ import java.util.Optional;
 @AllArgsConstructor
 @Log4j2
 @Repository
-public class UserStore {
+public class UserStore implements Crud {
 
-    private final CrudRepo crud;
+    private final SessionFactory sf;
 
     /**
      * Сохранить в базе.
@@ -22,7 +23,7 @@ public class UserStore {
      * @return пользователь с id.
      */
     public User create(User user) {
-        crud.run(session -> session.saveOrUpdate(user));
+        run(session -> session.saveOrUpdate(user), sf);
         return user;
     }
 
@@ -31,7 +32,7 @@ public class UserStore {
      * @param user пользователь.
      */
     public void update(User user) {
-        crud.run(session -> session.merge(user));
+        run(session -> session.merge(user), sf);
     }
 
     /**
@@ -39,9 +40,10 @@ public class UserStore {
      * @param userId ID
      */
     public void delete(int userId) {
-        crud.run(
+        run(
                 "delete from User where id = :fId",
-                Map.of("fId", userId)
+                Map.of("fId", userId),
+                sf
         );
     }
 
@@ -50,7 +52,7 @@ public class UserStore {
      * @return список пользователей.
      */
     public List<User> findAllOrderById() {
-        return crud.query("from User", User.class);
+        return query("from User", User.class, sf);
     }
 
     /**
@@ -58,9 +60,10 @@ public class UserStore {
      * @return пользователь.
      */
     public Optional<User> findById(int id) {
-        return crud.optional(
+        return optional(
                 "from User where id = :fId", User.class,
-                Map.of("fId", id)
+                Map.of("fId", id),
+                sf
         );
     }
 
@@ -70,9 +73,10 @@ public class UserStore {
      * @return список пользователей.
      */
     public List<User> findByLikeLogin(String key) {
-        return crud.query(
+        return query(
                 "from User where login like :fKey", User.class,
-                Map.of("fKey", "%" + key + "%")
+                Map.of("fKey", "%" + key + "%"),
+                sf
         );
     }
 
@@ -82,16 +86,18 @@ public class UserStore {
      * @return Optional or user.
      */
     public Optional<User> findByLogin(String login) {
-        return crud.optional(
+        return optional(
                 "from User where login = :fLogin", User.class,
-                Map.of("fLogin", login)
+                Map.of("fLogin", login),
+                sf
         );
     }
 
     public Optional<User> findUserByEmailAndPwd(User user) {
-        return crud.optional(
+        return optional(
                 "from User as u where u.login = :fLogin and u.password = :fPassword", User.class,
-                Map.of("fLogin", user.getLogin(), "fPassword", user.getPassword())
+                Map.of("fLogin", user.getLogin(), "fPassword", user.getPassword()),
+                sf
         );
     }
 
